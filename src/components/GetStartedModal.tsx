@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { X, Loader } from 'lucide-react';
 import { Button } from './Button';
-import { createAssessmentLead } from '../utils/supabase';
 
 interface GetStartedModalProps {
   isOpen: boolean;
@@ -32,7 +31,7 @@ export function GetStartedModal({ isOpen, onClose }: GetStartedModalProps) {
     setLoading(true);
 
     try {
-      await createAssessmentLead(formData);
+      // await createAssessmentLead(formData);
       setSuccess(true);
       setTimeout(() => {
         onClose();

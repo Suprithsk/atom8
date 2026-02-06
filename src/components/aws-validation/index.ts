@@ -1,0 +1,1 @@
+export { AwsValidationPage } from './AwsValidationPage';
