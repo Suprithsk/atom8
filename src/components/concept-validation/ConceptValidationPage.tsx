@@ -10,7 +10,7 @@ import { SubmitLoadingOverlay } from '../java-validation/SubmitLoadingOverlay';
 import { EvaluationResultsModal } from './EvaluationResultsModal';
 import type { ConceptQuestion, ConceptValidationConfig, ConceptValidationResponse } from './types';
 
-const API_URL = 'http://localhost:8080/api/v1/concept/validate-full';
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/concept/validate-full`;
 const STORAGE_KEY = 'atom8_concept_validation_last_response';
 
 export function ConceptValidationPage() {

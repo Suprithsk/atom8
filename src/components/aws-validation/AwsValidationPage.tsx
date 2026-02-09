@@ -12,7 +12,7 @@ import type { GenerateCodeResponse } from '../java-validation/CodeResponseModal'
 import type { CloudTestCase, CloudProvider, CloudValidationConfig } from './types';
 import { getSkillType, buildOutputTestCase } from './types';
 
-const API_URL = 'http://localhost:8080/api/v1/hands-on/generate-code';
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v1/hands-on/generate-code`;
 
 const STORAGE_KEYS: Record<CloudProvider, string> = {
   AWS: 'atom8_cloud_aws_last_response',
