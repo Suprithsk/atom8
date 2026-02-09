@@ -1,0 +1,892 @@
+{
+  "info": {
+    "name": "Concept & Hands-On Validation Platform",
+    "_postman_id": "validation-platform-2026",
+    "description": "Complete API collection for Concept-Based Validation and Hands-On Validation Code Generation.\n\n## Validation Types:\n1. **Concept-Based Validation** - Evaluate theory/concept answers from Word documents\n2. **Hands-On Spring Boot Validation** - Generate Java validation code for Spring Boot assessments\n3. **Hands-On AWS Cloud Validation** - Generate Python validation code for AWS assessments\n4. **Hands-On Azure Cloud Validation** - Generate Python validation code for Azure assessments\n5. **Hands-On GCP Cloud Validation** - Generate Python validation code for GCP assessments\n6. **Hands-On Go Lang Validation** - Generate Python validation code for Go Lang REST API assessments with PostgreSQL\n\n## Setup:\n1. Start the server: `mvn spring-boot:run`\n2. Base URL: `http://localhost:8080`\n3. Swagger UI: `http://localhost:8080/swagger-ui.html`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "githubOwner",
+      "value": "rajunernika",
+      "type": "string"
+    },
+    {
+      "key": "githubRepo",
+      "value": "validation-results",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Status",
+      "description": "Health check and status endpoints",
+      "item": [
+        {
+          "name": "Concept Validation Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "health"]
+            },
+            "description": "Check if the concept validation service is running"
+          },
+          "response": []
+        },
+        {
+          "name": "Hands-On Validation Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "health"]
+            },
+            "description": "Check if the hands-on validation service is running"
+          },
+          "response": []
+        },
+        {
+          "name": "GitHub Integration Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/github-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "github-status"]
+            },
+            "description": "Check GitHub integration configuration status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1. Concept-Based Validation",
+      "description": "APIs for evaluating concept/theory answers using LLM. Results are stored in GitHub.",
+      "item": [
+        {
+          "name": "Get Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "config"]
+            },
+            "description": "Get the current validation configuration including questions"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Questions List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/questions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "questions"]
+            },
+            "description": "Get list of questions for validation"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate - File Upload (Multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "answerFile",
+                  "type": "file",
+                  "src": "",
+                  "description": "User's answer document (.docx file)"
+                },
+                {
+                  "key": "config",
+                  "value": "{\n  \"assessmentId\": \"software-arch-001\",\n  \"assessmentTitle\": \"Software Architecture Assessment\",\n  \"defaultMaxMarks\": 10,\n  \"githubConfig\": {\n    \"repoName\": \"validation-results\"\n  },\n  \"questions\": [\n    {\n      \"id\": \"Q1\",\n      \"description\": \"Architecture Selection (Client-Server and Layered Architecture)\",\n      \"points\": 10,\n      \"questionType\": \"text-only\",\n      \"keyConcepts\": [\"client-server architecture\", \"layered architecture\", \"presentation layer\", \"business logic layer\", \"data access layer\"],\n      \"expectedAnswer\": \"PART A - Proposed Architecture: Client-Server with Layered design. Clients: Web browser, Admin Portal. Server: Application Server, Database Server. PART B - Layers: Presentation Layer handles UI, Business Layer contains core logic, Data Access Layer handles database operations. PART C - Why Suitable: Clear separation of concerns, easier maintenance.\"\n    },\n    {\n      \"id\": \"Q2\",\n      \"description\": \"Diagram Interpretation (Error Spotting and Correction)\",\n      \"points\": 10,\n      \"questionType\": \"text-and-diagram\",\n      \"keyConcepts\": [\"layered architecture\", \"separation of concerns\", \"maintainability\"],\n      \"expectedAnswer\": \"Issues: 1) Incorrect Layer Ordering, 2) Direct UI to Database connection. Corrected: Presentation -> Business -> Data Access -> Database.\"\n    },\n    {\n      \"id\": \"Q3\",\n      \"description\": \"Identifying Bounded Contexts (DDD)\",\n      \"points\": 8,\n      \"questionType\": \"text-only\",\n      \"keyConcepts\": [\"bounded context\", \"domain-driven design\", \"entities\"],\n      \"expectedAnswer\": \"Bounded Contexts: 1) Booking Context - Ticket booking. 2) Flight Management - Schedules. 3) Payment Context - Payments. 4) User Management - Users and roles.\"\n    }\n  ]\n}",
+                  "type": "text",
+                  "description": "Configuration JSON with questions and GitHub settings"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/validate-upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "validate-upload"]
+            },
+            "description": "Upload answer document (.docx) and config JSON for validation. Results are stored in GitHub.\n\n**Steps:**\n1. Select your .docx file for 'answerFile'\n2. Update 'config' JSON with your questions\n3. Send request\n4. Check response for GitHub URL"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate - File Path (JSON Body)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assessmentId\": \"software-arch-002\",\n  \"assessmentTitle\": \"Software Architecture Assessment\",\n  \"userAnswersPath\": \"C:/Users/NernikaBoyaRaju/OneDrive - Nuvepro Technologies Private Limited/github/Capgemini-Concept-based-validation/Software Architecture Assessment3.docx\",\n  \"defaultMaxMarks\": 10,\n  \"githubConfig\": {\n    \"repoName\": \"validation-results\"\n  },\n  \"questions\": [\n    {\n      \"id\": \"Q1\",\n      \"description\": \"Architecture Selection (Client-Server and Layered Architecture)\",\n      \"points\": 10,\n      \"questionType\": \"text-only\",\n      \"scenario\": \"You are hired as a Software Architect for a mid-size airline company planning to build an Airline Management System (AMS).\",\n      \"question\": \"a) Propose a high-level architecture using Client-Server and Layered Architecture. b) Identify each layer and its responsibility. c) Explain why layered architecture is suitable.\",\n      \"keyConcepts\": [\"client-server architecture\", \"layered architecture\", \"presentation layer\", \"business logic layer\", \"data access layer\", \"separation of concerns\"],\n      \"expectedAnswer\": \"PART A - Proposed Architecture: Client-Server with Layered design on server side. Clients: Web browser (Customer UI), Internal Admin Portal. Server: Application Server, Database Server. PART B - Layers: Presentation Layer handles UI, Business Layer contains core business rules, Data Access Layer communicates with database. PART C - Why Suitable: Clear separation of concerns, easier maintenance and testing, business logic independent of UI.\"\n    },\n    {\n      \"id\": \"Q2\",\n      \"description\": \"Diagram Interpretation (Error Spotting and Correction)\",\n      \"points\": 10,\n      \"questionType\": \"text-and-diagram\",\n      \"textWeight\": 70,\n      \"diagramWeight\": 30,\n      \"scenario\": \"Below is a proposed architecture diagram: [UI Layer] -> [Database Layer] -> [Business Logic Layer]\",\n      \"question\": \"a) Identify two architectural issues. b) Redraw the corrected layered architecture. c) Explain how the corrected version improves maintainability.\",\n      \"keyConcepts\": [\"layered architecture\", \"separation of concerns\", \"maintainability\", \"proper layer ordering\"],\n      \"expectedAnswer\": \"Issues: 1) Incorrect Layer Ordering - Business logic below Database. 2) Direct UI to Database connection. Corrected: [Presentation] -> [Business] -> [Data Access] -> [Database]. Improvements: Clear dependency direction, separation of concerns, easier testing.\",\n      \"diagramCriteria\": [\"Presentation Layer at top\", \"Business Layer in second position\", \"Data Access Layer third\", \"Database at bottom\"]\n    },\n    {\n      \"id\": \"Q3\",\n      \"description\": \"Identifying Bounded Contexts (DDD)\",\n      \"points\": 8,\n      \"questionType\": \"text-only\",\n      \"scenario\": \"Based on the AMS scenario: flight scheduling, ticket booking, passenger management, payment processing.\",\n      \"question\": \"a) Identify at least four bounded contexts. b) For each context, mention: Core responsibility and Example entities.\",\n      \"keyConcepts\": [\"bounded context\", \"domain-driven design\", \"flight management\", \"booking context\", \"payment context\"],\n      \"expectedAnswer\": \"Bounded Contexts: 1) Booking Context - Ticket booking. Entities: Booking, Ticket. 2) Flight Management - Flight schedules. Entities: Flight, Aircraft. 3) Payment Context - Payment processing. Entities: Payment, Transaction. 4) User Management - Users and roles. Entities: User, Role.\"\n    },\n    {\n      \"id\": \"Q4\",\n      \"description\": \"Tactical DDD Design (Booking Context)\",\n      \"points\": 8,\n      \"questionType\": \"text-only\",\n      \"question\": \"a) Identify: Aggregate Root, Entities, Value Objects. b) Explain why this aggregate boundary is important.\",\n      \"keyConcepts\": [\"aggregate root\", \"entities\", \"value objects\", \"aggregate boundary\"],\n      \"expectedAnswer\": \"Aggregate Root: Booking. Entities: Passenger, Ticket. Value Objects: SeatNumber, Money, FlightDate. Importance: Ensures consistency during booking operations, prevents partial updates.\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/validate-full",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "validate-full"]
+            },
+            "description": "Validate using file path (when file is already on server). Useful for testing.\n\n**Note:** Update 'userAnswersPath' to point to your actual .docx file location."
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Direct (JSON Answers)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": {\n    \"Q1\": \"The proposed architecture uses Client-Server with Layered design. The Presentation Layer handles UI and user interactions. The Business Layer contains core business logic like booking rules. The Data Access Layer handles database operations. This architecture provides separation of concerns and easier maintenance.\",\n    \"Q2\": \"The issues are: 1) Incorrect layer ordering - Database is above Business layer. 2) Direct connection from UI to Database. The corrected architecture should be: Presentation -> Business -> Data Access -> Database. This improves maintainability by ensuring proper dependency flow.\",\n    \"Q3\": \"The bounded contexts are: 1) Booking Context - handles ticket reservations with Booking and Ticket entities. 2) Flight Management - manages schedules with Flight and Aircraft entities. 3) Payment Context - processes payments with Payment and Transaction entities. 4) User Management - handles authentication with User and Role entities.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/concept/validate-direct",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "concept", "validate-direct"]
+            },
+            "description": "Quick validation with answers provided directly as JSON (no file upload). Uses questions from config.json."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Hands-On Spring Boot Validation",
+      "description": "Generate Java validation code for Spring Boot REST API assessments",
+      "item": [
+        {
+          "name": "Get Skill Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/skill-types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "skill-types"]
+            },
+            "description": "Get all supported skill types for code generation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "templates"]
+            },
+            "description": "Get available reference templates"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Basic CRUD API",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"SPRING_BOOT_API\",\n  \"projectName\": \"course-enrollment-system\",\n  \"packageName\": \"courseenrol\",\n  \"testcases\": [\n    {\n      \"name\": \"Add a valid course\",\n      \"description\": \"Should create a new course with 201 status\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/courses\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"requestBody\": {\n        \"name\": \"Java Programming\",\n        \"instructor\": \"John Doe\",\n        \"startDate\": \"2024-01-15\",\n        \"endDate\": \"2024-04-15\"\n      },\n      \"expectedResponse\": {\n        \"name\": \"Java Programming\",\n        \"instructor\": \"John Doe\"\n      },\n      \"validateFields\": [\"id\", \"name\", \"instructor\"],\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Get all courses\",\n      \"description\": \"Should return all courses with 200 status\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/courses\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"validateArrayNotEmpty\": true,\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Get course by ID\",\n      \"description\": \"Should return a specific course by ID\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/courses/{id}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"pathVariables\": {\n        \"id\": \"1\"\n      },\n      \"validateFields\": [\"id\", \"name\"],\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Update course\",\n      \"description\": \"Should update an existing course\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/courses/{id}\",\n      \"httpMethod\": \"PUT\",\n      \"expectedStatusCode\": 200,\n      \"pathVariables\": {\n        \"id\": \"1\"\n      },\n      \"requestBody\": {\n        \"name\": \"Advanced Java Programming\",\n        \"instructor\": \"Jane Doe\"\n      },\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Delete course\",\n      \"description\": \"Should delete a course and return 204\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/courses/{id}\",\n      \"httpMethod\": \"DELETE\",\n      \"expectedStatusCode\": 204,\n      \"pathVariables\": {\n        \"id\": \"1\"\n      },\n      \"marks\": 6\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate validation code for a basic CRUD REST API with Spring Boot"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - With Annotation Validation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"SPRING_BOOT_API\",\n  \"projectName\": \"student-management\",\n  \"packageName\": \"studentmgmt\",\n  \"testcases\": [\n    {\n      \"name\": \"Validate Student Entity Annotations\",\n      \"description\": \"Verify @Entity and @Table annotations on Student class\",\n      \"validationType\": \"ANNOTATION\",\n      \"entityClassName\": \"com.studentmgmt.entity.Student\",\n      \"annotationChecks\": [\n        {\n          \"classLevel\": true,\n          \"annotationSimpleName\": \"Entity\"\n        },\n        {\n          \"classLevel\": true,\n          \"annotationSimpleName\": \"Table\"\n        },\n        {\n          \"fieldName\": \"id\",\n          \"annotationSimpleName\": \"Id\"\n        },\n        {\n          \"fieldName\": \"id\",\n          \"annotationSimpleName\": \"GeneratedValue\"\n        },\n        {\n          \"fieldName\": \"name\",\n          \"annotationSimpleName\": \"NotBlank\",\n          \"alternativeAnnotations\": [\"NotNull\", \"NotEmpty\"]\n        },\n        {\n          \"fieldName\": \"email\",\n          \"annotationSimpleName\": \"Email\"\n        }\n      ],\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Validate StudentController Annotations\",\n      \"description\": \"Verify @RestController and @RequestMapping on controller\",\n      \"validationType\": \"ANNOTATION\",\n      \"entityClassName\": \"com.studentmgmt.controller.StudentController\",\n      \"annotationChecks\": [\n        {\n          \"classLevel\": true,\n          \"annotationSimpleName\": \"RestController\"\n        },\n        {\n          \"classLevel\": true,\n          \"annotationSimpleName\": \"RequestMapping\"\n        }\n      ],\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Add a valid student\",\n      \"description\": \"Create a new student with POST request\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/students\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"requestBody\": {\n        \"name\": \"John Smith\",\n        \"email\": \"john@example.com\",\n        \"grade\": \"A\"\n      },\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Get all students\",\n      \"description\": \"Should return list of students\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/students\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 8\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate validation code that includes annotation checks (e.g., @Entity, @Id, @NotNull)"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - With Database Validation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"SPRING_BOOT_API\",\n  \"projectName\": \"employee-management\",\n  \"packageName\": \"employeemgmt\",\n  \"testcases\": [\n    {\n      \"name\": \"Add employee via API\",\n      \"description\": \"Create employee and verify in database\",\n      \"validationType\": \"API\",\n      \"endpoint\": \"/api/employees\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"requestBody\": {\n        \"firstName\": \"Alice\",\n        \"lastName\": \"Johnson\",\n        \"department\": \"Engineering\",\n        \"salary\": 75000\n      },\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Verify employee in database\",\n      \"description\": \"Check if employee was persisted correctly\",\n      \"validationType\": \"DATABASE\",\n      \"tableName\": \"employees\",\n      \"dbQuery\": \"SELECT * FROM employees WHERE first_name = 'Alice'\",\n      \"expectedDbValues\": {\n        \"first_name\": \"Alice\",\n        \"last_name\": \"Johnson\",\n        \"department\": \"Engineering\"\n      },\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Verify application logs\",\n      \"description\": \"Check if employee creation was logged\",\n      \"validationType\": \"LOG\",\n      \"logFilePath\": \"logs/application.log\",\n      \"expectedLogMessages\": [\n        \"Employee created\",\n        \"Alice Johnson\"\n      ],\n      \"marks\": 4\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate validation code with database and log verification"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Generation History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "history"]
+            },
+            "description": "Get history of generated validation code"
+          },
+          "response": []
+        },
+        {
+          "name": "Get GitHub Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/github/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "github", "status"]
+            },
+            "description": "Check GitHub integration status for hands-on validation"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Hands-On AWS Cloud Validation",
+      "description": "Generate Python validation code for AWS Cloud assessments",
+      "item": [
+        {
+          "name": "Generate - AWS Serverless (Complete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"CLOUD_AWS\",\n  \"projectName\": \"orders-serverless-app\",\n  \"customInstructions\": \"Generate Python validation code following ValidationTemplateAws.py pattern with boto3\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Lambda Post Role Policies\",\n      \"description\": \"Verify that the lambda-post-role IAM role exists and has AWSStepFunctionsFullAccess policy attached\",\n      \"awsResourceType\": \"IAM_ROLE\",\n      \"marks\": 8,\n      \"hints\": \"Use check_if_all_policies_are_attached_to_role helper method\"\n    },\n    {\n      \"name\": \"Check Step Function Invoke Lambda Role\",\n      \"description\": \"Verify that the step-function-invoke-lambda role exists with AWSLambdaRole and AmazonSNSFullAccess policies\",\n      \"awsResourceType\": \"IAM_ROLE\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Process Payment Lambda Function\",\n      \"description\": \"Verify that the process-payment Lambda function exists with Python runtime\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Process Restaurant Lambda Function\",\n      \"description\": \"Verify that the process-restaurant Lambda function exists with Python runtime\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Update Order Status Lambda Function\",\n      \"description\": \"Verify that the update-order-from-pending-state Lambda function exists with Python runtime\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Step Function Creation\",\n      \"description\": \"Verify that the process-order-status Step Function state machine is created with ACTIVE status\",\n      \"awsResourceType\": \"STEP_FUNCTION\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Step Function States Configuration\",\n      \"description\": \"Verify Step Function has states: ProcessPayment, WaitForPayment, PaymentStatus, ProcessRestaurant, UpdateOrderStatus, PaymentFailed, SendOrderStatus\",\n      \"awsResourceType\": \"STEP_FUNCTION\",\n      \"marks\": 15\n    },\n    {\n      \"name\": \"Check SNS Topic Creation\",\n      \"description\": \"Verify that the order-status-notifier SNS topic is created\",\n      \"awsResourceType\": \"SNS_TOPIC\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check SNS Topic Email Subscription\",\n      \"description\": \"Verify that an email subscription exists and is confirmed for the order-status-notifier topic\",\n      \"awsResourceType\": \"SNS_TOPIC\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check SQS Dead Letter Queue\",\n      \"description\": \"Verify that the orders-async-dead-letter-queue SQS queue is created\",\n      \"awsResourceType\": \"SQS_QUEUE\",\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Check SQS Orders Queue\",\n      \"description\": \"Verify that the orders-async-queue SQS queue is created with dead letter queue configured\",\n      \"awsResourceType\": \"SQS_QUEUE\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check API Gateway Creation\",\n      \"description\": \"Verify that the orders-api HTTP API Gateway is created\",\n      \"awsResourceType\": \"API_GATEWAY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check DynamoDB Orders Table\",\n      \"description\": \"Verify that the orders-database DynamoDB table exists with correct schema\",\n      \"awsResourceType\": \"DYNAMODB_TABLE\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for a complete AWS serverless application with Lambda, Step Functions, SQS, SNS, API Gateway, and DynamoDB"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - AWS IAM Only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AWS_IAM\",\n  \"projectName\": \"iam-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Lambda Execution Role\",\n      \"description\": \"Verify lambda-execution-role has AWSLambdaBasicExecutionRole policy\",\n      \"awsResourceType\": \"IAM_ROLE\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check S3 Access Role\",\n      \"description\": \"Verify s3-access-role has AmazonS3FullAccess policy\",\n      \"awsResourceType\": \"IAM_ROLE\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check DynamoDB Access Role\",\n      \"description\": \"Verify dynamodb-access-role has AmazonDynamoDBFullAccess policy\",\n      \"awsResourceType\": \"IAM_ROLE\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for IAM roles and policies"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - AWS Lambda Only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AWS_LAMBDA\",\n  \"projectName\": \"lambda-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Hello World Function\",\n      \"description\": \"Verify hello-world Lambda function exists with Python 3.9 runtime\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Process Data Function\",\n      \"description\": \"Verify process-data Lambda function exists with Node.js 18 runtime\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check API Handler Function\",\n      \"description\": \"Verify api-handler Lambda function has API Gateway trigger\",\n      \"awsResourceType\": \"LAMBDA_FUNCTION\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Lambda functions"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - AWS S3 Only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AWS_S3\",\n  \"projectName\": \"s3-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Data Bucket Exists\",\n      \"description\": \"Verify data-storage bucket exists with versioning enabled\",\n      \"awsResourceType\": \"S3_BUCKET\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Logs Bucket Exists\",\n      \"description\": \"Verify logs-bucket exists with lifecycle policy\",\n      \"awsResourceType\": \"S3_BUCKET\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Static Website Bucket\",\n      \"description\": \"Verify static-website bucket has website hosting enabled\",\n      \"awsResourceType\": \"S3_BUCKET\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for S3 buckets"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - AWS Step Functions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AWS_STEP_FUNCTIONS\",\n  \"projectName\": \"stepfunctions-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Order Processing State Machine\",\n      \"description\": \"Verify order-processing state machine exists with ACTIVE status\",\n      \"awsResourceType\": \"STEP_FUNCTION\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check State Machine Role\",\n      \"description\": \"Verify state machine has correct execution role with Lambda invoke permissions\",\n      \"awsResourceType\": \"STEP_FUNCTION\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check State Machine Definition\",\n      \"description\": \"Verify state machine has correct states: Start, Process, Validate, Complete\",\n      \"awsResourceType\": \"STEP_FUNCTION\",\n      \"marks\": 12\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Step Functions state machines"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Hands-On Azure Cloud Validation",
+      "description": "Generate Python validation code for Azure Cloud assessments",
+      "item": [
+        {
+          "name": "Generate - Azure Complete (App Gateway + LB)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"CLOUD_AZURE\",\n  \"projectName\": \"bluesky-azure-app\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Application Gateway Name\",\n      \"description\": \"Verify that bluesky-appgw Application Gateway exists\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Application Gateway Size\",\n      \"description\": \"Verify that Application Gateway has Standard_v2 SKU\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Check Backend Pools\",\n      \"description\": \"Verify backend pools bluesky-appgwbe, bluesky-imagebe exist\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Load Balancer Name\",\n      \"description\": \"Verify that bluesky-lb Load Balancer exists\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Load Balancer Backend Pool\",\n      \"description\": \"Verify backend pool bluesky-be exists\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Health Probe\",\n      \"description\": \"Verify health probe bluesky-hp is configured\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 6\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure Application Gateway and Load Balancer"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Azure Application Gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AZURE_APP_GATEWAY\",\n  \"projectName\": \"appgateway-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check App Gateway Exists\",\n      \"description\": \"Verify Application Gateway exists with correct name\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check App Gateway SKU\",\n      \"description\": \"Verify Application Gateway has Standard_v2 or WAF_v2 SKU\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Backend Pools Configuration\",\n      \"description\": \"Verify backend address pools are configured correctly\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check HTTP Listeners\",\n      \"description\": \"Verify HTTP listeners are configured\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Routing Rules\",\n      \"description\": \"Verify request routing rules are configured\",\n      \"azureResourceType\": \"APPLICATION_GATEWAY\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure Application Gateway"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Azure Load Balancer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AZURE_LOAD_BALANCER\",\n  \"projectName\": \"loadbalancer-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Load Balancer Exists\",\n      \"description\": \"Verify Load Balancer exists with correct name\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Load Balancer SKU\",\n      \"description\": \"Verify Load Balancer has Standard SKU\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Check Frontend IP Configuration\",\n      \"description\": \"Verify frontend IP is configured with public IP\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Backend Pool\",\n      \"description\": \"Verify backend address pool is configured\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Health Probe\",\n      \"description\": \"Verify health probe is configured correctly\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Load Balancing Rules\",\n      \"description\": \"Verify load balancing rules are configured\",\n      \"azureResourceType\": \"LOAD_BALANCER\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure Load Balancer"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Azure Virtual Network",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AZURE_VIRTUAL_NETWORK\",\n  \"projectName\": \"vnet-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check VNet Exists\",\n      \"description\": \"Verify Virtual Network exists with correct name\",\n      \"azureResourceType\": \"VIRTUAL_NETWORK\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Address Space\",\n      \"description\": \"Verify VNet has correct address space configured\",\n      \"azureResourceType\": \"VIRTUAL_NETWORK\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Subnets\",\n      \"description\": \"Verify required subnets are created\",\n      \"azureResourceType\": \"VIRTUAL_NETWORK\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check VNet Peering\",\n      \"description\": \"Verify VNet peering is configured if required\",\n      \"azureResourceType\": \"VIRTUAL_NETWORK\",\n      \"marks\": 8\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure Virtual Network"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Azure Storage Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AZURE_STORAGE_ACCOUNT\",\n  \"projectName\": \"storage-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Storage Account Exists\",\n      \"description\": \"Verify Storage Account exists with correct name\",\n      \"azureResourceType\": \"STORAGE_ACCOUNT\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Storage Account SKU\",\n      \"description\": \"Verify Storage Account has Standard_LRS or Premium_LRS SKU\",\n      \"azureResourceType\": \"STORAGE_ACCOUNT\",\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Check HTTPS Only\",\n      \"description\": \"Verify HTTPS traffic only is enabled\",\n      \"azureResourceType\": \"STORAGE_ACCOUNT\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check Blob Containers\",\n      \"description\": \"Verify required blob containers exist\",\n      \"azureResourceType\": \"STORAGE_ACCOUNT\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure Storage Account"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Azure App Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"AZURE_APP_SERVICE\",\n  \"projectName\": \"appservice-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check App Service Exists\",\n      \"description\": \"Verify App Service/Web App exists\",\n      \"azureResourceType\": \"APP_SERVICE\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check App Service Plan\",\n      \"description\": \"Verify App Service is running on correct plan\",\n      \"azureResourceType\": \"APP_SERVICE\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check HTTPS Only\",\n      \"description\": \"Verify HTTPS Only is enabled\",\n      \"azureResourceType\": \"APP_SERVICE\",\n      \"marks\": 6\n    },\n    {\n      \"name\": \"Check Runtime Configuration\",\n      \"description\": \"Verify correct runtime stack is configured\",\n      \"azureResourceType\": \"APP_SERVICE\",\n      \"marks\": 8\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Azure App Service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Hands-On GCP Cloud Validation",
+      "description": "Generate Python validation code for GCP Cloud assessments",
+      "item": [
+        {
+          "name": "Generate - GCP Complete (Cloud Run + Compute)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"CLOUD_GCP\",\n  \"projectName\": \"flask-app-deployment\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Cloud Run Service Name\",\n      \"description\": \"Verify flask-app Cloud Run service exists\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Cloud Run Region\",\n      \"description\": \"Verify Cloud Run is in us-central1\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 5\n    },\n    {\n      \"name\": \"Check Artifact Registry\",\n      \"description\": \"Verify my-repo repository exists\",\n      \"gcpResourceType\": \"ARTIFACT_REGISTRY\",\n      \"marks\": 5\n    },\n    {\n      \"name\": \"Check VPC Network\",\n      \"description\": \"Verify simple-vpc exists\",\n      \"gcpResourceType\": \"VPC\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check VM Instance\",\n      \"description\": \"Verify simple-vm exists\",\n      \"gcpResourceType\": \"COMPUTE_ENGINE\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for GCP Cloud Run and Compute Engine"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - GCP Cloud Run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GCP_CLOUD_RUN\",\n  \"projectName\": \"cloud-run-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Cloud Run Service\",\n      \"description\": \"Verify Cloud Run service exists with correct name\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Service Region\",\n      \"description\": \"Verify service is deployed in correct region\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 5\n    },\n    {\n      \"name\": \"Check Image Source\",\n      \"description\": \"Verify image is from Artifact Registry\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 15\n    },\n    {\n      \"name\": \"Check URL Reachable\",\n      \"description\": \"Verify service URL returns 200 OK\",\n      \"gcpResourceType\": \"CLOUD_RUN\",\n      \"marks\": 20\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for GCP Cloud Run"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - GCP Compute Engine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GCP_COMPUTE_ENGINE\",\n  \"projectName\": \"vm-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check VM Name\",\n      \"description\": \"Verify VM instance exists with correct name\",\n      \"gcpResourceType\": \"COMPUTE_ENGINE\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Machine Type\",\n      \"description\": \"Verify VM has e2-micro machine type\",\n      \"gcpResourceType\": \"COMPUTE_ENGINE\",\n      \"marks\": 8\n    },\n    {\n      \"name\": \"Check VM Zone\",\n      \"description\": \"Verify VM is in us-central1-a zone\",\n      \"gcpResourceType\": \"COMPUTE_ENGINE\",\n      \"marks\": 5\n    },\n    {\n      \"name\": \"Check Network Configuration\",\n      \"description\": \"Verify VM is attached to correct VPC\",\n      \"gcpResourceType\": \"COMPUTE_ENGINE\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for GCP Compute Engine"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - GCP VPC Network",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GCP_VPC\",\n  \"projectName\": \"vpc-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check VPC Name\",\n      \"description\": \"Verify VPC network exists with correct name\",\n      \"gcpResourceType\": \"VPC\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Subnet\",\n      \"description\": \"Verify subnet exists in correct region\",\n      \"gcpResourceType\": \"SUBNET\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Firewall Rules\",\n      \"description\": \"Verify firewall rules are configured\",\n      \"gcpResourceType\": \"FIREWALL\",\n      \"marks\": 10\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for GCP VPC Network"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - GCP BigQuery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GCP_BIGQUERY\",\n  \"projectName\": \"bigquery-validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check Dataset Exists\",\n      \"description\": \"Verify BigQuery dataset is created\",\n      \"gcpResourceType\": \"BIGQUERY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Table Exists\",\n      \"description\": \"Verify table is created in dataset\",\n      \"gcpResourceType\": \"BIGQUERY\",\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Check Table Schema\",\n      \"description\": \"Verify table has correct columns\",\n      \"gcpResourceType\": \"BIGQUERY\",\n      \"marks\": 15\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for GCP BigQuery"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Hands-On Go Lang Validation",
+      "description": "Generate Python validation code for Go Lang REST API assessments with PostgreSQL",
+      "item": [
+        {
+          "name": "Generate - Go Lang Inventory System (Complete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GOLANG_API\",\n  \"projectName\": \"inventory-billing-system\",\n  \"customInstructions\": \"Generate Python validation code following ValidateGoLangTemplate.py pattern with PostgreSQL validation\",\n  \"testcases\": [\n    {\n      \"name\": \"Check for successful product creation\",\n      \"description\": \"Verify POST /api/products creates product and stores in PostgreSQL\",\n      \"endpoint\": \"/api/products\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 10,\n      \"exampleInput\": {\"name\": \"Laptop\", \"price\": 999, \"quantity\": 50},\n      \"exampleOutput\": {\"id\": 1, \"name\": \"Laptop\", \"price\": 999, \"quantity\": 50},\n      \"tableName\": \"products\"\n    },\n    {\n      \"name\": \"Check for successful product retrieval by id\",\n      \"description\": \"Verify GET /api/products/{id} returns correct product\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"tableName\": \"products\"\n    },\n    {\n      \"name\": \"Check for updating a product\",\n      \"description\": \"Verify PUT /api/products/{id} updates product in database\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"PUT\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"exampleInput\": {\"name\": \"Updated Laptop\", \"price\": 1099, \"quantity\": 45},\n      \"tableName\": \"products\"\n    },\n    {\n      \"name\": \"Check for deleting a product\",\n      \"description\": \"Verify DELETE /api/products/{id} removes product from database\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"DELETE\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"tableName\": \"products\"\n    },\n    {\n      \"name\": \"Check for successful customer creation\",\n      \"description\": \"Verify POST /api/customers creates customer\",\n      \"endpoint\": \"/api/customers\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 10,\n      \"exampleInput\": {\"name\": \"John Doe\", \"email\": \"john@example.com\"},\n      \"exampleOutput\": {\"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\"},\n      \"tableName\": \"customers\"\n    },\n    {\n      \"name\": \"Check for retrieving all customers\",\n      \"description\": \"Verify GET /api/customers returns all customers\",\n      \"endpoint\": \"/api/customers\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"tableName\": \"customers\"\n    },\n    {\n      \"name\": \"Check for successful billing creation\",\n      \"description\": \"Verify POST /api/billing creates billing record (depends on product and customer)\",\n      \"endpoint\": \"/api/billing\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 10,\n      \"exampleInput\": {\"cust_id\": 1, \"prod_id\": 1, \"quantity\": 2},\n      \"tableName\": \"billing\",\n      \"dependsOn\": [\"Check for successful product creation\", \"Check for successful customer creation\"]\n    },\n    {\n      \"name\": \"Check for updating quantity if product is already bought\",\n      \"description\": \"Verify quantity updates when same product is bought again\",\n      \"endpoint\": \"/api/billing\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"tableName\": \"billing\",\n      \"dependsOn\": [\"Check for successful billing creation\"]\n    },\n    {\n      \"name\": \"Check for retrieving all billings by customer id\",\n      \"description\": \"Verify GET /api/billing/{custId} returns customer billings\",\n      \"endpoint\": \"/api/billing/{custId}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 20,\n      \"tableName\": \"billing\",\n      \"dependsOn\": [\"Check for successful billing creation\"]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for a complete Go Lang inventory and billing system"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Go Lang CRUD Only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GOLANG_CRUD\",\n  \"projectName\": \"product-crud-api\",\n  \"testcases\": [\n    {\n      \"name\": \"Create Product\",\n      \"description\": \"Test product creation endpoint\",\n      \"endpoint\": \"/api/products\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 15,\n      \"exampleInput\": {\"name\": \"Test Product\", \"price\": 100, \"quantity\": 10}\n    },\n    {\n      \"name\": \"Get Product by ID\",\n      \"description\": \"Test product retrieval by ID\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15\n    },\n    {\n      \"name\": \"Get All Products\",\n      \"description\": \"Test retrieving all products\",\n      \"endpoint\": \"/api/products\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15\n    },\n    {\n      \"name\": \"Update Product\",\n      \"description\": \"Test product update endpoint\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"PUT\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15,\n      \"exampleInput\": {\"name\": \"Updated Product\", \"price\": 150, \"quantity\": 5}\n    },\n    {\n      \"name\": \"Delete Product\",\n      \"description\": \"Test product deletion endpoint\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"DELETE\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Go Lang CRUD operations"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Go Lang Microservices",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GOLANG_MICROSERVICES\",\n  \"projectName\": \"ecommerce-microservices\",\n  \"customInstructions\": \"Generate validation for two microservices: Product Service (port 8080) and Order Service (port 8081)\",\n  \"testcases\": [\n    {\n      \"name\": \"Product Service - Create Product\",\n      \"description\": \"Create product in Product Service\",\n      \"endpoint\": \"/api/products\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 10,\n      \"exampleInput\": {\"name\": \"Gadget\", \"price\": 299, \"quantity\": 100}\n    },\n    {\n      \"name\": \"Product Service - Get All Products\",\n      \"description\": \"Get all products from Product Service\",\n      \"endpoint\": \"/api/products\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10\n    },\n    {\n      \"name\": \"Order Service - Create Order\",\n      \"description\": \"Create order in Order Service (calls Product Service)\",\n      \"endpoint\": \"/api/orders\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 15,\n      \"exampleInput\": {\"product_id\": 1, \"customer_id\": 1, \"quantity\": 2},\n      \"dependsOn\": [\"Product Service - Create Product\"]\n    },\n    {\n      \"name\": \"Order Service - Get Orders by Customer\",\n      \"description\": \"Get all orders for a customer\",\n      \"endpoint\": \"/api/orders/customer/{id}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 10,\n      \"dependsOn\": [\"Order Service - Create Order\"]\n    },\n    {\n      \"name\": \"Order Service - Verify Product Stock Reduction\",\n      \"description\": \"Verify product quantity is reduced after order\",\n      \"endpoint\": \"/api/products/{id}\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15,\n      \"dependsOn\": [\"Order Service - Create Order\"]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-code"]
+            },
+            "description": "Generate Python validation code for Go Lang microservices architecture"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate - Go Lang with Push to GitHub",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skillType\": \"GOLANG_API\",\n  \"projectName\": \"notes-api\",\n  \"customInstructions\": \"Generate validation for a Notes API with CRUD operations\",\n  \"testcases\": [\n    {\n      \"name\": \"Create Note\",\n      \"description\": \"Create a new note via POST\",\n      \"endpoint\": \"/api/notes\",\n      \"httpMethod\": \"POST\",\n      \"expectedStatusCode\": 201,\n      \"marks\": 20,\n      \"exampleInput\": {\"title\": \"My Note\", \"content\": \"Note content\", \"priority\": \"High\"}\n    },\n    {\n      \"name\": \"Get All Notes\",\n      \"description\": \"Retrieve all notes\",\n      \"endpoint\": \"/api/notes\",\n      \"httpMethod\": \"GET\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15\n    },\n    {\n      \"name\": \"Update Note\",\n      \"description\": \"Update existing note\",\n      \"endpoint\": \"/api/notes/{id}\",\n      \"httpMethod\": \"PUT\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15,\n      \"exampleInput\": {\"title\": \"Updated Note\", \"content\": \"Updated content\", \"priority\": \"Medium\"}\n    },\n    {\n      \"name\": \"Delete Note\",\n      \"description\": \"Delete a note\",\n      \"endpoint\": \"/api/notes/{id}\",\n      \"httpMethod\": \"DELETE\",\n      \"expectedStatusCode\": 200,\n      \"marks\": 15\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/generate-and-push",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "generate-and-push"]
+            },
+            "description": "Generate Go Lang validation code and push to GitHub repository"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Reference Templates",
+      "description": "Get reference templates for different skill types",
+      "item": [
+        {
+          "name": "Get Spring Boot Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/SPRING_BOOT_API",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "SPRING_BOOT_API"]
+            },
+            "description": "Get reference validation template for Spring Boot API"
+          },
+          "response": []
+        },
+        {
+          "name": "Get AWS Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/CLOUD_AWS",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "CLOUD_AWS"]
+            },
+            "description": "Get reference validation template for AWS Cloud"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Azure Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/CLOUD_AZURE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "CLOUD_AZURE"]
+            },
+            "description": "Get reference validation template for Azure Cloud"
+          },
+          "response": []
+        },
+        {
+          "name": "Get GCP Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/CLOUD_GCP",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "CLOUD_GCP"]
+            },
+            "description": "Get reference validation template for GCP Cloud"
+          },
+          "response": []
+        },
+        {
+          "name": "Get React Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/REACT_COMPONENT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "REACT_COMPONENT"]
+            },
+            "description": "Get reference validation template for React components"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Go Lang Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hands-on/reference/GOLANG_API",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hands-on", "reference", "GOLANG_API"]
+            },
+            "description": "Get reference validation template for Go Lang REST API"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+

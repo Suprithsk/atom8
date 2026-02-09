@@ -202,10 +202,6 @@ export function ConceptValidationPage() {
 
         {/* Bottom Actions */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
-          <Button variant="secondary" size="md" onClick={handleGenerateJson}>
-            <FileJson className="w-4 h-4" />
-            Generate JSON
-          </Button>
           <Button variant="primary" size="md" onClick={handleSubmit} disabled={submitting}>
             <Send className="w-4 h-4" />
             Submit

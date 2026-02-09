@@ -86,6 +86,52 @@ export function EvaluationResultsModal({ response, onClose }: EvaluationResultsM
           </div>
         </div>
 
+        {/* GitHub Result */}
+        {githubResult?.pushed && (
+          <div className="px-6 py-3 bg-emerald-50 border-b border-emerald-100 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                <Github className="w-4 h-4 text-emerald-700" />
+              </div>
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-emerald-800">Pushed to GitHub</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                  {githubResult.repoUrl && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-slate-500 shrink-0">Repo:</span>
+                      <a href={githubResult.repoUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate">
+                        {githubResult.repoUrl.replace('https://github.com/', '')}
+                      </a>
+                    </div>
+                  )}
+                  {githubResult.filePath && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-slate-500 shrink-0">File:</span>
+                      <span className="text-slate-700 truncate font-mono text-xs">{githubResult.filePath}</span>
+                    </div>
+                  )}
+                  {githubResult.commitSha && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-slate-500 shrink-0">Commit:</span>
+                      <span className="text-slate-700 font-mono text-xs">{githubResult.commitSha.substring(0, 7)}</span>
+                    </div>
+                  )}
+                  {githubResult.fileUrl && (
+                    <div className="flex items-center gap-1.5">
+                      <a href={githubResult.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs font-medium">
+                        View result file on GitHub →
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Question Results */}
         <div className="flex-1 overflow-y-auto">
           <div className="divide-y divide-slate-100">
